@@ -8,6 +8,7 @@ Created on Sat Jul 21 17:31:13 2018
 
 import numpy as np
 import pandas as pd
+import matplotlib as mpl
 import matplotlib.pyplot as plt
 
 df = pd.read_csv("itctray.csv")
@@ -50,18 +51,21 @@ plt.xticks(rotation=45)
 plt.show()
 
 
-def func(pct, allvals):
+def func(pct, allvals,nya):
     absolute = int(pct/100.*np.sum(allvals))
-    if absolute > 5:
+    if absolute > nya:
         return "{:.1f}%\n({:d})".format(pct, absolute)
     else:
         return " "
 
-def donut(a,b,title):    
+def donut(a,b,title,nya):    
     fig, ax = plt.subplots(figsize=(18, 9), subplot_kw=dict(aspect="equal"))
     
-    
-    wedges, texts, autotexts = ax.pie(a, autopct=lambda pct: func(pct, a),
+#    dpi = 80
+#    fig = plt.figure(dpi = dpi, figsize = (512 / dpi, 384 / dpi) )
+#    #fig = plt.figure()
+#    mpl.rcParams.update({'font.size': 10})
+    wedges, texts, autotexts = ax.pie(a, autopct=lambda pct: func(pct, a, nya),
                                       textprops=dict(color="w"))
     
     ax.legend(wedges, b,
@@ -72,12 +76,12 @@ def donut(a,b,title):
     plt.setp(autotexts, size=24, weight="bold")
     
     ax.set_title(title)
-    
+    plt.savefig(title + ".png")
     plt.show()
 
-donut(k["topics"],k["authors"],"Topics")
-donut(k["comments"],k["authors"],"Comments")
-donut(k["avg"],k["authors"],"Avg")
+donut(k["topics"],k["authors"],"Topics", 5)
+donut(k["comments"],k["authors"],"Comments", 500)
+donut(k["avg"],k["authors"],"Avg", 50)
 
 #from bokeh.plotting import *
 #from numpy import pi
@@ -99,7 +103,7 @@ import plotly
 import plotly.plotly as py
 import plotly.graph_objs as go
 
-def pieplot(values,count):
+def pieplot(values,title):
     
     labels = k["authors"]
         
@@ -108,12 +112,12 @@ def pieplot(values,count):
     plotly.offline.init_notebook_mode(connected=True)
     
     plotly.offline.plot({"data": [trace],
-        "layout": go.Layout(title="hello world")
-    }, auto_open=False, filename='basic_pie_chart' + str(count) + '.html')
+        "layout": go.Layout(title=title)
+    }, auto_open=False, filename= str(title) + '.html')
 
-pieplot(k["topics"], 1)
-pieplot(k["comments"], 2)
-pieplot(k["avg"], 3)
+pieplot(k["topics"], "Topics")
+pieplot(k["comments"], "Comments")
+pieplot(k["avg"], "Avg")
 #labels = k["authors"]
 #values = k["comments"]
 #
@@ -230,28 +234,63 @@ plt.show()
 ##plt.xticks(rotation=45)
 #plt.show()
 
+
+#layout = go.Layout(
+#    xaxis=dict(
+#        showgrid=False,
+#        showline=False,
+#        showticklabels=False,
+#        zeroline=False,
+#        domain=[0.15, 1]
+#    ),
+#    yaxis=dict(
+#        showgrid=False,
+#        showline=False,
+#        showticklabels=False,
+#        zeroline=False,
+#    ),
+#    barmode='stack',
+#    paper_bgcolor='rgb(248, 248, 255)',
+#    plot_bgcolor='rgb(248, 248, 255)',
+#    margin=dict(
+#        l=120,
+#        r=10,
+#        t=140,
+#        b=80
+#    ),
+#    showlegend=False,
+#)
+#
+#fig = go.Figure(data=data, layout=layout)
 data = [go.Bar(
             x=k["authors"],
-            y=k["topics"]
-)]
-
-plotly.offline.plot(data, filename='horizontal-bar.html')
-
-data = [go.Bar(
-            x=k["authors"],
-            y=k["comments"]
+            y=k["topics"],
             
 )]
+layout = dict(title = 'Topics')
+fig = go.Figure(data=data, layout=layout)
 
-plotly.offline.plot(data, filename='horizontal-bar2.html')
+plotly.offline.plot(fig, filename='horizontal-bar.html', auto_open = False)
 
 data = [go.Bar(
             x=k["authors"],
-            y=k["avg"]
+            y=k["comments"],
+            
             
 )]
+layout = dict(title = 'Comments')
+fig = go.Figure(data=data, layout=layout)
+plotly.offline.plot(fig, filename='horizontal-bar2.html', auto_open = False)
 
-plotly.offline.plot(data, filename='horizontal-bar3.html')
+data = [go.Bar(
+            x=k["authors"],
+            y=k["avg"],
+            
+            
+)]
+layout = dict(title = 'Avg')
+fig = go.Figure(data=data, layout=layout)
+plotly.offline.plot(fig, filename='horizontal-bar3.html', auto_open = False)
 
 fig, ax = plt.subplots()
 
@@ -266,10 +305,116 @@ ax.barh(y_pos, performance, xerr=error, align='center',
 ax.set_yticks(y_pos)
 ax.set_yticklabels(people)
 ax.invert_yaxis()  # labels read top-to-bottom
-ax.set_xlabel('Performance')
+#ax.set_xlabel('Performance')
 ax.set_title('How fast do you want to go today?')
-
+#plt.savefig("dick.png")
 plt.show()
 
-    
+
+
+print(df.head())
+df["date"] = df["date"].replace('в ','',regex=True)
+df["time"] = df["time"].replace(['Обновлено: ','в '],'',regex=True) 
+df["date"] = pd.to_datetime(df["date"])
+df["time"] = pd.to_datetime(df["time"])
+
+
+
+#labels = df["author"]
+#
+#values = df["date"]
+#
+#title = "plot"
+#        
+#trace = go.Pie(labels=labels, values=values)
+#
+#plotly.offline.init_notebook_mode(connected=True)
+#
+#plotly.offline.plot({"data": [trace],
+#    "layout": go.Layout(title=title)
+#}, auto_open=False, filename= str(title) + '.html')    
+
+print(df.head())
+print(df.dtypes)
+plt.plot(df["date"], df["counts"])
+plt.show()
+
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Fixing random state for reproducibility
+#np.random.seed(19680801)
+
+title = "1"
+
+N = 14
+x = k["topics"]
+y = k["authors"]
+colors = np.random.rand(N)
+area = k["avg"]  # 0 to 15 point radii
+
+plt.scatter(x, y, s=area, c=colors, alpha=0.5)
+plt.savefig(title + ".png")
+plt.show()
+
+title = "2"
+
+N = 14
+x = k["comments"]
+y = k["authors"]
+colors = np.random.rand(N)
+area = k["topics"]  # 0 to 15 point radii
+
+plt.scatter(x, y, s=area, c=colors, alpha=0.5)
+plt.savefig(title + ".png")
+plt.show()
+
+title = "3"
+
+N = 14
+x = k["topics"]
+y = k["authors"]
+colors = np.random.rand(N)
+area = k["comments"]  # 0 to 15 point radii
+
+plt.scatter(x, y, s=area, c=colors, alpha=0.5)
+plt.savefig(title + ".png")
+plt.show()
+
+title = "4"
+
+N = 14
+x = k["avg"]
+y = k["authors"]
+colors = np.random.rand(N)
+area = k["comments"]  # 0 to 15 point radii
+
+plt.scatter(x, y, s=area, c=colors, alpha=0.5)
+plt.savefig(title + ".png")
+plt.show()
+
+title = "5"
+
+N = 14
+x = k["comments"]
+y = k["authors"]
+colors = np.random.rand(N)
+area = k["avg"]  # 0 to 15 point radii
+
+plt.scatter(x, y, s=area, c=colors, alpha=0.5)
+plt.savefig(title + ".png")
+plt.show()
+
+title = "6"
+
+N = 14
+x = k["avg"]
+y = k["authors"]
+colors = np.random.rand(N)
+area = k["topics"]  # 0 to 15 point radii
+
+plt.scatter(x, y, s=area, c=colors, alpha=0.5)
+plt.savefig(title + ".png")
+plt.show()
+
 save = k.to_csv("authorsanalyze.csv")
