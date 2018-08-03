@@ -315,8 +315,8 @@ plt.show()
 print(df.head())
 df["date"] = df["date"].replace('в ','',regex=True)
 df["time"] = df["time"].replace(['Обновлено: ','в '],'',regex=True) 
-df["date"] = pd.to_datetime(df["date"])
-df["time"] = pd.to_datetime(df["time"])
+#df["date"] = pd.to_datetime(df["date"])
+#df["time"] = pd.to_datetime(df["time"])
 
 
 
@@ -416,5 +416,32 @@ area = k["topics"]  # 0 to 15 point radii
 plt.scatter(x, y, s=area, c=colors, alpha=0.5)
 plt.savefig(title + ".png")
 plt.show()
+
+print(df.head(5))
+df["date_split"] = df["date"].str.split(" ")
+df["ouy"] = df["date_split"].str[1]
+df["wow"] = df["date_split"].str[2]
+df["time_split"] = df["time"].str.split(" ")
+df["ouy2"] = df["time_split"].str[1]
+df["wow2"] = df["time_split"].str[2]
+wiwi = [*np.unique(df["ouy"])]
+mimi = df.groupby(["ouy"]).sum()
+del df["counts"]
+nopi = df.groupby(["ouy", "author"]).sum()
+mipi = df.groupby(["ouy"]).count()
+print(nopi)
+print(wiwi)
+print(mimi)
+print(mipi)
+plt.plot(wiwi,mimi["counts"])
+plt.xticks(rotation=45)
+plt.show()
+print(df.head(5))
+#pi = df.groupby("date").count()
+#print(pi)
+#pi2 = df.groupby("date").sum()
+#print(pi2)
+#pi3 = [*np.unique(df["date"])]
+#print(pi3)
 
 save = k.to_csv("authorsanalyze.csv")
