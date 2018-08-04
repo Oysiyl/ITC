@@ -347,7 +347,7 @@ import matplotlib.pyplot as plt
 
 title = "1"
 
-N = 14
+N = len(list)
 x = k["topics"]
 y = k["authors"]
 colors = np.random.rand(N)
@@ -359,7 +359,7 @@ plt.show()
 
 title = "2"
 
-N = 14
+N = len(list)
 x = k["comments"]
 y = k["authors"]
 colors = np.random.rand(N)
@@ -371,7 +371,7 @@ plt.show()
 
 title = "3"
 
-N = 14
+N = len(list)
 x = k["topics"]
 y = k["authors"]
 colors = np.random.rand(N)
@@ -383,7 +383,7 @@ plt.show()
 
 title = "4"
 
-N = 14
+N = len(list)
 x = k["avg"]
 y = k["authors"]
 colors = np.random.rand(N)
@@ -395,7 +395,7 @@ plt.show()
 
 title = "5"
 
-N = 14
+N = len(list)
 x = k["comments"]
 y = k["authors"]
 colors = np.random.rand(N)
@@ -407,7 +407,7 @@ plt.show()
 
 title = "6"
 
-N = 14
+N = len(list)
 x = k["avg"]
 y = k["authors"]
 colors = np.random.rand(N)
@@ -426,17 +426,70 @@ df["ouy2"] = df["time_split"].str[1]
 df["wow2"] = df["time_split"].str[2]
 wiwi = [*np.unique(df["ouy"])]
 mimi = df.groupby(["ouy"]).sum()
-del df["counts"]
-nopi = df.groupby(["ouy", "author"]).sum()
-mipi = df.groupby(["ouy"]).count()
+#del df["counts"]
+df2 = df[["ouy","sometext","wow"]]
+nopi = df2.groupby(["ouy", "sometext"]).sum()
+nopi = nopi.sort_values(by="wow", ascending=False)
+mipi = df2.groupby(["ouy"]).count()
 print(nopi)
+minnopi = nopi["wow"].min()
+maxnopi = nopi["wow"].max()
+print("Topics are publish usually from " + minnopi + " to " + maxnopi + " hours")
+df3 = df[["ouy","sometext","wow2"]]
+nopi2 = df3.groupby(["ouy", "sometext"]).sum()
+nopi2 = nopi2.sort_values(by="wow2", ascending=False)
+mipi2 = df3.groupby(["ouy"]).count()
+print(nopi2)
+minnopi2 = nopi2["wow2"].min()
+maxnopi2 = nopi2["wow2"].max()
+print("Topics are updated usually from " + minnopi2 + " to " + maxnopi2 + " hours")
+df4 = df[["ouy","author"]]
+nopi3 = df4.groupby(["ouy"]).sum()
+mipi3 = df4.groupby(["ouy"]).count()
+print(nopi3)
 print(wiwi)
 print(mimi)
 print(mipi)
+print(mipi3)
 plt.plot(wiwi,mimi["counts"])
 plt.xticks(rotation=45)
 plt.show()
+plt.plot(wiwi,mipi3["author"])
+plt.xticks(rotation=45)
+plt.show()
+wow3 = round(mimi["counts"]/mipi3["author"], 0)
+wow3 = wow3.astype(int)
+wow3 = wow3.sort_values(ascending=False)
+k2 = pd.DataFrame({"days":wiwi, "topics":mipi3["author"], "comments":mimi["counts"], "avg":wow3})
+k2.reset_index(drop=True, inplace=True)
+avgtop = round(int(k["topics"].sum()/k["topics"].count()))
+print("Avg numbers of topics in one day is " + str(avgtop) + " topics")
+avgcom = round(int(k["comments"].sum()/k["topics"].count()))
+print("Avg numbers of comments in one day is " + str(avgcom) + " comments")
+worktime = 12*60*60
+freqtop = round(worktime/avgtop)
+print("Each new topic appear in " + str(freqtop/60) + "minutes or " + str(freqtop) + " seconds")
+freqcom = round(worktime/avgcom)
+print("Each new comment appear in " + str(freqcom) + " seconds")
+avgfreq = round(freqtop/freqcom)
+print("Frequency of appear new comment in " + str(avgfreq) + " times more then frequency of appear new topic")
+plt.plot(k2["days"],k2["avg"])
+plt.xticks(rotation=45)
+plt.show()
+print(k2.head(5))
 print(df.head(5))
+nope = df.groupby(["author","ouy"]).count()
+nopechunk = nope["counts"]
+nope2 = df.groupby(["author","ouy"]).sum()
+print(nope)
+print(nopechunk)
+print(nope2)
+bnope = df.groupby(["ouy","author"]).count()
+bnopechunk = bnope["counts"]
+bnope2 = df.groupby(["ouy","author"]).sum()
+print(bnope)
+print(bnopechunk)
+print(bnope2)
 #pi = df.groupby("date").count()
 #print(pi)
 #pi2 = df.groupby("date").sum()
