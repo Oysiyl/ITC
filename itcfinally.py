@@ -32,7 +32,7 @@ headers = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_6) AppleW
 
 listadres = []
 
-numbers = range(1,11)
+numbers = range(1,26)
 l = [*numbers]
 print(l)
 for i in numbers:
@@ -45,6 +45,10 @@ for i in numbers:
 print(listadres)
 def onepage(adres):
     page = requests.get(adres, headers = headers)
+    
+    if page.status_code != requests.codes.ok:
+        return False
+    
     soup = BeautifulSoup(page.content, 'html.parser')
 
     title = soup.find_all("h2", class_ = "entry-title")

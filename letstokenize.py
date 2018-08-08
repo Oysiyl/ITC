@@ -22,7 +22,7 @@ df2 = df["title"].tolist()
 
 df3 = df["sometext"].tolist()
 #Change df2 to df3 and you will train not on title, but on sometext
-list = [*df3]
+list = [*df2]
 
 list2 = []
 

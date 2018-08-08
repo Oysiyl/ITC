@@ -22,6 +22,8 @@ print(df.head())
 print(list)
 print(len(list))
 
+w = (32,24)
+z = 300
 
 name = df.groupby('author')
 wow0 = df.groupby('author').sum()
@@ -79,8 +81,8 @@ def donut(a,b,title,nya):
     plt.savefig(title + ".png")
     plt.show()
 
-donut(k["topics"],k["authors"],"Topics", 5)
-donut(k["comments"],k["authors"],"Comments", 500)
+donut(k["topics"],k["authors"],"Topics", 16)
+donut(k["comments"],k["authors"],"Comments", 1000)
 donut(k["avg"],k["authors"],"Avg", 50)
 
 #from bokeh.plotting import *
@@ -341,12 +343,11 @@ plt.show()
 
 import numpy as np
 import matplotlib.pyplot as plt
-
 # Fixing random state for reproducibility
 #np.random.seed(19680801)
 
 title = "1"
-
+plt.figure(figsize=w, dpi=z)
 N = len(list)
 x = k["topics"]
 y = k["authors"]
@@ -358,7 +359,7 @@ plt.savefig(title + ".png")
 plt.show()
 
 title = "2"
-
+plt.figure(figsize=w, dpi=z)
 N = len(list)
 x = k["comments"]
 y = k["authors"]
@@ -370,7 +371,7 @@ plt.savefig(title + ".png")
 plt.show()
 
 title = "3"
-
+plt.figure(figsize=w, dpi=z)
 N = len(list)
 x = k["topics"]
 y = k["authors"]
@@ -382,7 +383,7 @@ plt.savefig(title + ".png")
 plt.show()
 
 title = "4"
-
+plt.figure(figsize=w, dpi=z)
 N = len(list)
 x = k["avg"]
 y = k["authors"]
@@ -394,7 +395,7 @@ plt.savefig(title + ".png")
 plt.show()
 
 title = "5"
-
+plt.figure(figsize=w, dpi=z)
 N = len(list)
 x = k["comments"]
 y = k["authors"]
@@ -406,7 +407,7 @@ plt.savefig(title + ".png")
 plt.show()
 
 title = "6"
-
+plt.figure(figsize=w, dpi=z)
 N = len(list)
 x = k["avg"]
 y = k["authors"]
@@ -454,17 +455,19 @@ print(mipi3)
 wow3 = round(mimi["counts"]/mipi3["author"], 0)
 wow3 = wow3.astype(int)
 #wow3 = wow3.sort_values(ascending=False)
-
+plt.figure(figsize=w, dpi=z)
 plt.plot(wiwi,mimi["counts"])
 plt.xticks(rotation=45)
 plt.title("Commentsperday")
 plt.savefig("commday.png")
 plt.show()
+plt.figure(figsize=w, dpi=z)
 plt.plot(wiwi,mipi3["author"])
 plt.xticks(rotation=45)
 plt.title("Topicsperday")
 plt.savefig("topicday.png")
 plt.show()
+plt.figure(figsize=w, dpi=z)
 plt.plot(wiwi,wow3)
 plt.xticks(rotation=45)
 plt.title("DayAvg")
