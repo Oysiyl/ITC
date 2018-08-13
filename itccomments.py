@@ -11,6 +11,10 @@ import pandas as pd
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 
+import plotly
+import plotly.plotly as py
+import plotly.graph_objs as go
+
 df = pd.read_csv("itctray.csv")
 del df["Unnamed: 0"]
 print(df.head())
@@ -23,7 +27,7 @@ print(list)
 print(len(list))
 
 w = (32,24)
-z = 300
+z = 80
 
 name = df.groupby('author')
 wow0 = df.groupby('author').sum()
@@ -100,10 +104,6 @@ donut(k["avg"],k["authors"],"Avg", 50)
 #
 #p.wedge(x=0, y=0, radius=1, start_angle=starts, end_angle=ends, color=colors)
 #show(p)
-
-import plotly
-import plotly.plotly as py
-import plotly.graph_objs as go
 
 def pieplot(values,title):
     
@@ -502,9 +502,97 @@ bnope2 = df.groupby(["ouy","author"]).sum()
 #print(bnopechunk)
 #print(bnope2)
 bnipe = pd.DataFrame({"topics":bnope["counts"],"comments":bnope2["counts"]})
+bnipe21 = bnipe.reset_index()
 print(bnipe)
 bnipe2 = pd.DataFrame({"topics":nope["counts"],"comments":nope2["counts"]})
+bnipe22 = bnipe2.reset_index()
 print(bnipe2)
+print(list)
+print(wiwi)
+df13 = pd.DataFrame({"date":wiwi})
+try1 = bnipe2.loc["Вадим Карпусь","topics"]
+try1 = pd.DataFrame(try1)
+print(try1)
+try2 = bnipe2.loc["Олег Данилов","topics"]
+try2 = pd.DataFrame(try2)
+print(try2)
+df13  = pd.concat([df13,try1,try2])
+#df13  = df13.merge(try2, left_index=True, right_index=True)
+print(df13)
+
+#df13 = df13.merge(try1)
+for i in range(len(list)):
+    ror = list[i]
+    print(ror)
+    df13[ror] = bnipe2.loc[ror,"topics"]
+df13 = df13.fillna(0)
+del df13["topics"]
+#df13 = df13.iloc[len(wiwi):,:]    
+print(df13)
+length = len(wiwi)
+df14 = df13.iloc[length:,:]
+df14["date"] = wiwi
+df14 = df14.reset_index(drop=True)
+df14.sort_values(by="date")
+print(df14)
+#print(mimi)
+#print(mipi)
+#print(nopi)
+#print(bnipe["ouy"])
+#print(bnipe["author"])
+def tracing(list):
+    trace = go.Bar(
+        x=df14["date"],
+        y=df14[list],
+        name=list
+#        marker=dict(
+#            color='rgb(219, 64, 82, 0.7)',
+#            line=dict(
+#                color='rgba(219, 64, 82, 1.0)',
+#                width=2,
+#                )
+#            )
+        )
+    return trace
+data = []
+for i in range(len(list)):
+    trace = tracing(list[i])
+    data.append(trace)
+
+layout = go.Layout(
+#    title='Hot & cold records',
+#    xaxis=dict(
+#        title='Days',
+#        tickfont=dict(
+#            size=14,
+#            color='rgb(107, 107, 107)'
+#        )
+#    ),
+#    yaxis=dict(
+#        title='Count',
+#        titlefont=dict(
+#            size=16,
+#            color='rgb(107, 107, 107)'
+#        ),
+#        tickfont=dict(
+#            size=14,
+#            color='rgb(107, 107, 107)'
+#        )
+#    ),
+#    legend=dict(
+#        x=0,
+#        y=1.0,
+#        bgcolor='rgba(255, 255, 255, 0)',
+#        bordercolor='rgba(255, 255, 255, 0)'
+#    ),
+    barmode='stack'
+#    bargap=0.15,
+#    bargroupgap=0.1
+)
+
+fig = go.Figure(data=data, layout=layout)
+plotly.offline.plot(fig, filename='Summtable.html', auto_open = False)
+
 #pi = df.groupby("date").count()
 #print(pi)
 #pi2 = df.groupby("date").sum()
