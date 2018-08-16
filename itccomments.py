@@ -593,6 +593,178 @@ layout = go.Layout(
 fig = go.Figure(data=data, layout=layout)
 plotly.offline.plot(fig, filename='Summtable.html', auto_open = False)
 
+list2 = ["1AM","2AM","3AM","4AM","5AM","6AM","7AM","8AM","9AM","10AM","11AM", \
+         "12AM","1PM","2PM","3PM","4PM","5PM","6PM","7PM","8PM","9PM","10PM", \
+         "11PM","12PM"]
+list3 = ["00","01","02","03","04","05","06","07","08","09","10","11","12", \
+         "13","14","15","16","17","18","19","20","21","22","23"]
+print(len(list2))
+df15 = df[["author","counts","wow"]]
+#df15["wow"] = pd.to_datetime(df15["wow"])
+df15 = df15.sort_values(by="wow")
+df15 = df15.reset_index()
+df15["topics"] = 1
+df15["wow2"] = df15["wow"].str.split(":")
+df15["wow2"] = df15["wow2"].str[0]
+del df15["index"]
+#df15.sort("wow")
+print(df15)
+print(df15.info())
+
+nype = df.groupby(["author","wow"]).count()
+nype2 = df.groupby(["author","wow"]).sum()
+bnype = df.groupby(["wow","author"]).count()
+bnype2 = df.groupby(["wow","author"]).sum()
+nip = df15.groupby("wow").count()
+nop = df15.groupby("author").sum()
+nip2 = df15.groupby("author").count()
+nop2 = df15.groupby("wow").sum()
+print(df15.info())
+nyp = df15.groupby(["author","topics"]).sum()
+nyp2 = df15.groupby(["author","topics"]).count()
+nap = df15.groupby("topics").count()
+nap2 = df15.groupby("topics").sum()
+nup = df15.groupby(["author","wow2"]).count()
+nup2 = df15.groupby(["author","wow2"]).sum()
+nep = df15.groupby(["wow2","author"]).count()
+nep2 = df15.groupby(["wow2","author"]).sum()
+nep = nep.reset_index()
+nep2 = nep2.reset_index()
+#print(nup,nup2)
+print(nep,nep2)
+#print(nip,nop,nip2,nop2,nap,nap2,nyp,nyp2, bnype2)
+bnype2 = bnype2.reset_index(drop=True)
+#print(bnype2.dtypes)
+#print(bnype2.info())
+
+nop = nop.reset_index()
+nop["authors"] = list
+print(nop)
+#for i in range(len(list3)):
+#
+#    borgi = nep2.loc[nep["wow2"]==i,"topics"]
+#    nop[list3[i]] = borgi
+print(nop)
+nep2 = (nep2.pivot('author','wow2','topics')
+        .fillna(0)
+        .reindex(columns=list3, fill_value=0)
+        .reset_index()
+        .rename_axis(None, axis=1))
+print(nep2)
+#df = pd.DataFrame({"hours":list3})
+#nep2 = (nep2.pivot('author','wow2','topics')
+#        .fillna(0)
+#        .reindex(columns=list, fill_value=0)
+#        .reset_index()
+#        .rename_axis(None, axis=1))
+df = nep2.transpose()
+df = df.iloc[1:]
+df.columns = list
+
+print(df)
+#print(bnype2.describe())
+#try1 = nep2.loc["07","author"]
+#try1 = pd.DataFrame(try1)
+#print(try1)
+#try2 = nep2.loc["08","author"]
+#try2 = pd.DataFrame(try2)
+#print(try2)
+#df16  = pd.concat([df13,try1,try2])
+##df13  = df13.merge(try2, left_index=True, right_index=True)
+#print(df16)
+'''
+import pandas as pd
+df = pd.DataFrame({"author":["A","B", "B","C","A","C"],
+                   "hour":["h01","h02","h04","h04","h05","h05"],
+                   "number_of_topics":["1","4","2","6","8","3"]})
+print(df)
+df2 = pd.DataFrame({"author":["A","B","C"],
+                    "h01":["1","0","0"],
+                    "h02":["0","4","0"],
+                    "h03":["0","0","0"],
+                    "h04":["0","2","6"],
+                    "h05":["8","0","3"],
+                    "h06":["0","0","0"]})
+print(df)
+print(df2)
+cols = ['h{:02d}'.format(x) for x in range(1, 7)]
+df = (df.pivot('author','hour','number_of_topics')
+        .fillna(0)
+        .reindex(columns=cols, fill_value=0)
+        .reset_index()
+        .rename_axis(None, axis=1))
+print (df)
+'''
+#
+##df13 = df13.merge(try1)
+#for i in range(len(list)):
+#    ror = list[i]
+#    print(ror)
+#    df13[ror] = bnipe2.loc[ror,"topics"]
+#df13 = df13.fillna(0)
+#del df13["topics"]
+##df13 = df13.iloc[len(wiwi):,:]    
+#print(df13)
+#print(df15)
+
+df = df.reset_index(drop=True)
+df["hour"] = list3
+print(df)
+print(df.dtypes)
+print(df.info())
+def tracing2(list):
+    trace = go.Bar(
+        x=df["hour"],
+        y=df[list],
+        name=list
+#        marker=dict(
+#            color='rgb(219, 64, 82, 0.7)',
+#            line=dict(
+#                color='rgba(219, 64, 82, 1.0)',
+#                width=2,
+#                )
+#            )
+        )
+    return trace
+data = []
+for i in range(len(list)):
+    trace = tracing2(list[i])
+    data.append(trace)
+
+layout = go.Layout(
+#    title='Hot & cold records',
+#    xaxis=dict(
+#        title='Days',
+#        tickfont=dict(
+#            size=14,
+#            color='rgb(107, 107, 107)'
+#        )
+#    ),
+#    yaxis=dict(
+#        title='Count',
+#        titlefont=dict(
+#            size=16,
+#            color='rgb(107, 107, 107)'
+#        ),
+#        tickfont=dict(
+#            size=14,
+#            color='rgb(107, 107, 107)'
+#        )
+#    ),
+#    legend=dict(
+#        x=0,
+#        y=1.0,
+#        bgcolor='rgba(255, 255, 255, 0)',
+#        bordercolor='rgba(255, 255, 255, 0)'
+#    ),
+    barmode='stack'
+#    bargap=0.15,
+#    bargroupgap=0.1
+)
+
+fig = go.Figure(data=data, layout=layout)
+plotly.offline.plot(fig, filename='Summtable2.html', auto_open = False)
+
 #pi = df.groupby("date").count()
 #print(pi)
 #pi2 = df.groupby("date").sum()
