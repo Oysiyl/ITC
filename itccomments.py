@@ -11,11 +11,14 @@ import pandas as pd
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 
+import datetime
+
 import plotly
 import plotly.plotly as py
 import plotly.graph_objs as go
 
-df = pd.read_csv("itctray.csv")
+df0 = pd.read_csv("itctray.csv")
+df = df0
 del df["Unnamed: 0"]
 print(df.head())
 print(df.info())
@@ -267,9 +270,20 @@ plt.show()
 data = [go.Bar(
             x=k["authors"],
             y=k["topics"],
-            
+            text=k["topics"],
+               textposition = 'auto',
+               hovertext = "text",
+               marker=dict(
+                   color='rgb(158,202,225)',
+                   line=dict(
+                        color='rgb(8,48,107)',
+                        width=1.5),
+                    ),
+                opacity=0.6
 )]
-layout = dict(title = 'Topics')
+layout = go.Layout(title='Topics',
+                   xaxis=dict(title='Author'),
+                   yaxis=dict(title='Counts'))
 fig = go.Figure(data=data, layout=layout)
 
 plotly.offline.plot(fig, filename='horizontal-bar.html', auto_open = False)
@@ -277,20 +291,42 @@ plotly.offline.plot(fig, filename='horizontal-bar.html', auto_open = False)
 data = [go.Bar(
             x=k["authors"],
             y=k["comments"],
-            
+            text=k["comments"],
+               textposition = 'auto',
+               hovertext = "text",
+               marker=dict(
+                   color='rgb(158,202,225)',
+                   line=dict(
+                        color='rgb(8,48,107)',
+                        width=1.5),
+                    ),
+                opacity=0.6
             
 )]
-layout = dict(title = 'Comments')
+layout = go.Layout(title='Comments',
+                   xaxis=dict(title='Author'),
+                   yaxis=dict(title='Counts'))
 fig = go.Figure(data=data, layout=layout)
 plotly.offline.plot(fig, filename='horizontal-bar2.html', auto_open = False)
 
 data = [go.Bar(
             x=k["authors"],
             y=k["avg"],
-            
+            text=k["avg"],
+               textposition = 'auto',
+               hovertext = "text",
+               marker=dict(
+                   color='rgb(158,202,225)',
+                   line=dict(
+                        color='rgb(8,48,107)',
+                        width=1.5),
+                    ),
+                opacity=0.6
             
 )]
-layout = dict(title = 'Avg')
+layout = dict(title = 'Avg',
+              xaxis=dict(title='Author'),
+              yaxis=dict(title='Counts'))
 fig = go.Figure(data=data, layout=layout)
 plotly.offline.plot(fig, filename='horizontal-bar3.html', auto_open = False)
 
@@ -541,10 +577,21 @@ print(df14)
 #print(bnipe["ouy"])
 #print(bnipe["author"])
 def tracing(list):
+    l1 = []
+    l2 = []
+    s1 = [*df14["date"]]
+    s2 = [*df14[list]]
+    for i in range(len(s2)):
+        if s2[i] > 0:
+            l1.append(s1[i])   
+            l2.append(s2[i])
     trace = go.Bar(
-        x=df14["date"],
-        y=df14[list],
-        name=list
+    x=df14["date"],
+    y=df14[list],
+    name=list,
+    text = s2,
+    textposition = 'auto',
+    hoverinfo = "name"
 #        marker=dict(
 #            color='rgb(219, 64, 82, 0.7)',
 #            line=dict(
@@ -552,7 +599,15 @@ def tracing(list):
 #                width=2,
 #                )
 #            )
-        )
+    )
+    del l1,l2,s1,s2
+#        marker=dict(
+#            color='rgb(219, 64, 82, 0.7)',
+#            line=dict(
+#                color='rgba(219, 64, 82, 1.0)',
+#                width=2,
+#                )
+#            )
     return trace
 data = []
 for i in range(len(list)):
@@ -560,6 +615,33 @@ for i in range(len(list)):
     data.append(trace)
 
 layout = go.Layout(
+    title='How many articles published at each day',
+    xaxis=dict(
+        title='Days',
+        tickfont=dict(
+            size=14,
+            color='rgb(107, 107, 107)'
+        )
+    ),
+    yaxis=dict(
+        title='Number of topics',
+        titlefont=dict(
+            size=16,
+            color='rgb(107, 107, 107)'
+        ),
+        tickfont=dict(
+            size=14,
+            color='rgb(107, 107, 107)'
+        )
+    ),
+    legend=dict(
+        x=1.0,
+        y=1.0,
+        bgcolor='rgba(255, 255, 255, 0)',
+        bordercolor='rgba(255, 255, 255, 0)'
+    ),
+    bargap=0.15,
+    bargroupgap=0.1,
 #    title='Hot & cold records',
 #    xaxis=dict(
 #        title='Days',
@@ -713,10 +795,21 @@ print(df)
 print(df.dtypes)
 print(df.info())
 def tracing2(list):
+    l1 = []
+    l2 = []
+    s1 = [*df["hour"]]
+    s2 = [*df[list]]
+    for i in range(len(s2)):
+        if s2[i] > 0:
+            l1.append(s1[i])   
+            l2.append(s2[i])
     trace = go.Bar(
         x=df["hour"],
         y=df[list],
-        name=list
+        name=list,
+        text = s2,
+        textposition = 'auto',
+        hoverinfo = "name"
 #        marker=dict(
 #            color='rgb(219, 64, 82, 0.7)',
 #            line=dict(
@@ -725,6 +818,7 @@ def tracing2(list):
 #                )
 #            )
         )
+    del l1,l2,s1,s2
     return trace
 data = []
 for i in range(len(list)):
@@ -732,6 +826,33 @@ for i in range(len(list)):
     data.append(trace)
 
 layout = go.Layout(
+     title='When each author published an article?',
+    xaxis=dict(
+        title='Hours',
+        tickfont=dict(
+            size=14,
+            color='rgb(107, 107, 107)'
+        )
+    ),
+    yaxis=dict(
+        title='Number of topics',
+        titlefont=dict(
+            size=16,
+            color='rgb(107, 107, 107)'
+        ),
+        tickfont=dict(
+            size=14,
+            color='rgb(107, 107, 107)'
+        )
+    ),
+    legend=dict(
+        x=0,
+        y=1.0,
+        bgcolor='rgba(255, 255, 255, 0)',
+        bordercolor='rgba(255, 255, 255, 0)'
+    ),
+    bargap=0.15,
+    bargroupgap=0.1,
 #    title='Hot & cold records',
 #    xaxis=dict(
 #        title='Days',
@@ -764,7 +885,206 @@ layout = go.Layout(
 
 fig = go.Figure(data=data, layout=layout)
 plotly.offline.plot(fig, filename='Summtable2.html', auto_open = False)
-
+df = df0
+print(df.head())
+print(datetime.datetime.today().weekday())
+from datetime import date
+import calendar
+my_date = date.today()
+woo = calendar.day_name[my_date.weekday()]
+print(woo)
+dt = '18.10.2001'
+day, month, year = (int(x) for x in dt.split('.'))    
+answer = datetime.date(year, month, day).today()
+answer = calendar.day_name[answer.weekday()]
+df["date"] = df["ouy"]
+df['dow'] = pd.to_datetime(df['ouy'], format='%d.%m.%Y').dt.weekday_name
+df = df[["author","counts","date","dow"]]
+print(answer)
+df = df.sort_values(by="dow")
+df = df.reset_index(drop=True)
+#df["ouy3"] = df["ouy"].today()
+#df["ouy4"] = calendar.day_name[df["ouy"].weekday()]
+print(df.head())
+list = ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"]
+nipi = df.groupby(["dow","date"]).count().reset_index()
+nipi2 = df.groupby(["dow","date"]).sum().reset_index()
+nipi3 = pd.DataFrame({"dow":nipi["dow"], "date":nipi["date"], \
+                      "topics":nipi["counts"], "comments":nipi2["counts"]})
+nipi3 = nipi3.sort_values(by="dow")
+nopi = df.groupby(["date","dow"]).count().reset_index()
+nopi2 = df.groupby(["date","dow"]).sum().reset_index()
+nopi3 = pd.DataFrame({"dow":nopi["dow"], "date":nopi["date"], \
+                      "topics":nopi["counts"], "comments":nopi2["counts"]})
+nopi3 = nopi3.sort_values(by="dow")
+nopi3 = round(nopi3.groupby("dow").sum()/nopi3.groupby("dow").count(),0)
+#nopi3 = nopi3.reset_index()
+del nopi3["date"]
+nopi3.rename(columns={'comments':'avgcomm',"topics":"avgtop"}, inplace=True)
+nopi3["avgcomm"] = nopi3["avgcomm"].astype(int)
+nopi3["avgtop"] = nopi3["avgtop"].astype(int)
+#nopi3['dow'] = pd.Categorical(nopi3['dow'], categories=list, ordered=True)
+#nopi3["dow"] = nopi3["dow"].sort_index()
+#crashes_by_day = nopi3["dow"].value_counts()
+#crashes_by_day = crashes_by_day.sort_index()
+#nopi3["dow"] = crashes_by_day.index
+sorterIndex = dict(zip(list,range(len(list))))
+nopi3['dow'] = nopi3.index
+nopi3['dow'] = nopi3['dow'].map(sorterIndex)
+print(nopi3.head())
+nopi3.sort_values('dow', inplace=True)
+del nopi3["dow"]
+nopi3 = nopi3.reset_index()
+nopi3["avgavg"] = round(nopi3["avgcomm"]/nopi3["avgtop"])
+nopi3["avgavg"] = nopi3["avgavg"].astype(int)
+print(nopi3.head())
+print(nipi)
+print(nipi2)
+print(nopi)
+print(nopi2)
+print(nipi3)
+print(nopi3)
+#print(crashes_by_day)
+data = [go.Bar(x=nopi3["dow"],
+               y=nopi3["avgcomm"],
+               text=nopi3["avgcomm"],
+               textposition = 'auto',
+               hovertext = "text",
+               marker=dict(
+                   color='rgb(158,202,225)',
+                   line=dict(
+                        color='rgb(8,48,107)',
+                        width=1.5),
+                    ),
+                opacity=0.6
+            
+)]
+layout = go.Layout(
+    title='Avgcomm',
+    xaxis=dict(
+        title='Day of week',
+        tickfont=dict(
+            size=14,
+            color='rgb(107, 107, 107)'
+        )
+    ),
+    yaxis=dict(
+        title='Number of comments',
+        titlefont=dict(
+            size=16,
+            color='rgb(107, 107, 107)'
+        ),
+        tickfont=dict(
+            size=14,
+            color='rgb(107, 107, 107)'
+        )
+    ),
+    legend=dict(
+        x=0,
+        y=1.0,
+        bgcolor='rgba(255, 255, 255, 0)',
+        bordercolor='rgba(255, 255, 255, 0)'
+    ),
+    bargap=0.15,
+    bargroupgap=0.1
+)
+fig = go.Figure(data=data, layout=layout)
+plotly.offline.plot(fig, filename='Avgcomm.html', auto_open = False)
+data = [go.Bar(
+            x=nopi3["dow"],
+            y=nopi3["avgtop"],
+            text=nopi3["avgtop"],
+            textposition = 'auto',
+            hovertext = "text",
+            marker=dict(
+                color='rgb(158,202,225)',
+                line=dict(
+                     color='rgb(8,48,107)',
+                     width=1.5),
+                 ),
+            opacity=0.6
+            
+            
+)]
+layout = go.Layout(
+    title='Avgtop',
+    xaxis=dict(
+        title='Day of week',
+        tickfont=dict(
+            size=14,
+            color='rgb(107, 107, 107)'
+        )
+    ),
+    yaxis=dict(
+        title='Number of topics',
+        titlefont=dict(
+            size=16,
+            color='rgb(107, 107, 107)'
+        ),
+        tickfont=dict(
+            size=14,
+            color='rgb(107, 107, 107)'
+        )
+    ),
+    legend=dict(
+        x=0,
+        y=1.0,
+        bgcolor='rgba(255, 255, 255, 0)',
+        bordercolor='rgba(255, 255, 255, 0)'
+    ),
+    bargap=0.15,
+    bargroupgap=0.1
+)
+fig = go.Figure(data=data, layout=layout)
+plotly.offline.plot(fig, filename='Avgtopics.html', auto_open = False)
+data = [go.Bar(
+            x=nopi3["dow"],
+            y=nopi3["avgavg"],
+            text=nopi3["avgavg"],
+              textposition = 'auto',
+              hovertext = "text",
+              marker=dict(
+                  color='rgb(158,202,225)',
+                  line=dict(
+                       color='rgb(8,48,107)',
+                       width=1.5),
+                   ),
+               opacity=0.6
+            
+            
+)]
+layout = go.Layout(
+    title='Avgavg',
+    xaxis=dict(
+        title='Day of week',
+        tickfont=dict(
+            size=14,
+            color='rgb(107, 107, 107)'
+        )
+    ),
+    yaxis=dict(
+        title='Average of comments per topic',
+        titlefont=dict(
+            size=16,
+            color='rgb(107, 107, 107)'
+        ),
+        tickfont=dict(
+            size=14,
+            color='rgb(107, 107, 107)'
+        )
+    ),
+    legend=dict(
+        x=0,
+        y=1.0,
+        bgcolor='rgba(255, 255, 255, 0)',
+        bordercolor='rgba(255, 255, 255, 0)'
+    ),
+    bargap=0.15,
+    bargroupgap=0.1
+)
+fig = go.Figure(data=data, layout=layout)
+plotly.offline.plot(fig, filename='Avgavg.html', auto_open = False)
+print(df14)
 #pi = df.groupby("date").count()
 #print(pi)
 #pi2 = df.groupby("date").sum()
