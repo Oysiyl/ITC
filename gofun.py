@@ -24,19 +24,20 @@ t = textgenrnn()
 #textgen.generate(1, temperature = 1.0)
 #t=textgenrnn('textgenrnn_weights.hdf5')
 #t = textgenrnn('itc-titles-0,4%-epochs100.hdf5')
-t = textgenrnn('itc-titles-1%-epochs100.hdf5')
+#t = textgenrnn('itc-titles-1%-epochs100.hdf5')
 #t = textgenrnn('itc-titles-epoch100.hdf5')
 #t = textgenrnn('itc-titles-epochs100.hdf5')
 #t = textgenrnn('120epochs5%itc.hdf5')
 #t = textgenrnn('itc-titles-1%-epochs1000.hdf5')
-#t.train_from_file("test.txt", num_epochs = 100, gen_epochs = 0, batchsize = 256, train_size = 0.8, dropout = 0.2, word_level=True, set_validation=False)
+t.train_from_file("test.txt", num_epochs = 10, gen_epochs = 0, batchsize = 256, train_size = 0.8, dropout = 0.2, word_level=True, set_validation=False)
 #t.train_from_file("test.txt", num_epochs = 1000, save_epochs = 100, gen_epochs = 0, batch_size = 128)
 #t.train_from_file("test.txt", new_model =True, num_epochs = 1, gen_epochs = 0, train_size=0.8, dropout=0.2, word_level=True, set_validation=False)
 #t.generate(50, temperature = 1.0)
 #generated_texts = t.generate(5, temperature=[0.2, 1.0])
-t.generate_samples(temperatures=[0.2, 0.5, 0.8, 1.2, 1.5])
+#t.generate(interactive=True,top_n=5)
+#t.generate_samples(temperatures=[0.2, 0.5, 0.8, 1.2, 1.5])
 #t.generate_to_file('textgenrnn_texts.txt', n=5)
-#t.generate_samples(10, prefix="Apple")
+#t.generate_samples(10, prefix="Valve")
 #max_gen_length
 #t = textgenrnn()
 #t.reset()
@@ -60,3 +61,11 @@ t.generate_samples(temperatures=[0.2, 0.5, 0.8, 1.2, 1.5])
 #                                  max_length=10,
 #                                  max_gen_length=50,
 #                                  max_words=5000)
+
+#from textgenrnn import textgenrnn
+#textgen = textgenrnn(weights_path='colaboratory_weights.hdf5',
+#                       vocab_path='colaboratory_vocab.json',
+#                       config_path='colaboratory_config.json')
+#
+#textgen.generate_samples(max_gen_length=1000)
+#textgen.generate_to_file('textgenrnn_texts.txt', max_gen_length=1000)
