@@ -43,7 +43,7 @@ def onepage(adres):
     #Use headers to prevent hide our script
     headers = {'User-Agent': 'Mozilla/5.0'}
     #Get page
-    page = requests.get(adres, headers = headers)
+    page = requests.get(adres, headers = headers, timeout=5)
     #Get all of the html code 
     soup = BeautifulSoup(page.content, 'html.parser')
     #Find title the topic
@@ -93,8 +93,11 @@ def onepage(adres):
 #Create an empty DataFrame
 df = pd.DataFrame()
 #Adding each new page in one DataFrame
-for url in listadres:
-    df = pd.concat([df, onepage(url)], ignore_index = True)
+for c,v in enumerate(listadres):
+    df = pd.concat([df, onepage(v)], ignore_index = True)
+    u = 100/(len(listadres))
+    percent = int(round(u*c,2))
+    print("Currently done " + str(percent) + "%")
 #Check df
 print(df)
 #Save DataFrame to csv
