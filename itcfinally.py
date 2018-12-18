@@ -25,6 +25,11 @@ Created on Thu Jul 12 16:44:53 2018
 import pandas as pd
 from bs4 import BeautifulSoup
 import requests
+from tqdm import tqdm
+import time
+
+start0 = time.time()
+
 #Create list which contains how many pages you want to scraping
 numbers = [*range(1, 26)]
 #Create an empty list for all of the page adresses
@@ -93,12 +98,17 @@ def onepage(adres):
 #Create an empty DataFrame
 df = pd.DataFrame()
 #Adding each new page in one DataFrame
-for c,v in enumerate(listadres):
+for c,v in tqdm(enumerate(listadres)):
     df = pd.concat([df, onepage(v)], ignore_index = True)
     u = 100/(len(listadres))
     percent = int(round(u*c,2))
     print("Currently done " + str(percent) + "%")
+    time.sleep(1.5)
 #Check df
 print(df)
 #Save DataFrame to csv
 df.to_csv("itctray.csv")
+end0 = time.time()
+elapsed_time0 = end0 - start0
+elapsed_time0 = time.strftime("%H:%M:%S", time.gmtime(elapsed_time0))
+print("Mission complete in " + str(elapsed_time0))
