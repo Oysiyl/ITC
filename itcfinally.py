@@ -6,6 +6,7 @@ Created on Thu Jul 12 16:44:53 2018.
 @author: dmitriy
 """
 # import all the necessary libraries
+import argparse
 from bs4 import BeautifulSoup
 import datetime as dt
 import pandas as pd
@@ -14,6 +15,16 @@ import time as t
 from tqdm import tqdm
 
 start0 = t.time()
+
+# construct the argument parse and parse the arguments
+ap = argparse.ArgumentParser()
+ap.add_argument("-f", "--from", required=False, type=str,
+                default=None, help="Choose start date")
+ap.add_argument("-t", "--to", required=False, type=str,
+                default=None, help="Choose end date")
+ap.add_argument("-c", "--count", required=False, type=int,
+                default=None, help="Specify number of pages")
+args = vars(ap.parse_args())
 
 
 def catch_error(something):
@@ -37,8 +48,9 @@ def catch_error(something):
         return something
 
 
-list2 = ['18-03-2012', '21-03-2012']  # d-m-y
-list1 = [1, 2]
+# list2 = ['18-03-2012', '21-03-2012']  # d-m-y
+list2 = [args["from"], args["to"]]
+# list1 = [i for i in range(1, args["count"])]
 
 
 def get_search_query(list2, t):
@@ -64,7 +76,7 @@ def get_search_query(list2, t):
     return search_query
 
 
-def prep_numbers_2(search_query, list2, list1):
+def prep_numbers_2(count, list2):
     """Prep list to parse.
 
     __Attributes__
@@ -79,7 +91,7 @@ def prep_numbers_2(search_query, list2, list1):
     # https://itc.ua/?s&after=10-01-2019&before=12-01-2019
     # https://itc.ua/page/3/?s&after=10-01-2019&before=12-01-2019
     # Create list which contains how many pages you want to scraping
-    numbers = list(range(list1[0], list1[1]+1))
+    numbers = list(range(0, count))
     # Create an empty list for all of the page adresses
     listadres = []
     # Use for loop to fill list above with page adresses
@@ -92,17 +104,14 @@ def prep_numbers_2(search_query, list2, list1):
                        + "/?s&after=" + str(list2[0])
                        + "&before=" + str(list2[1])
                        )
+
         listadres.append(example)
     # Check output
     print(listadres)
     return listadres
 
 
-search_query = get_search_query(list2, 0)
-listadres = prep_numbers_2(search_query, list2, list1)
-
-
-def prep_numbers(list1):
+def prep_numbers(count):
     """Prep list to parse.
 
     __Attributes__
@@ -115,15 +124,16 @@ def prep_numbers(list1):
     # https://itc.ua/?s&after=10-01-2019&before=12-01-2019
     # https://itc.ua/page/3/?s&after=10-01-2019&before=12-01-2019
     # Create list which contains how many pages you want to scraping
-    numbers = list(range(list1[0], list1[1]+1))
+    # numbers = list(range(list1[0], list1[1]+1))
+    numbers = [i for i in range(0, count)]
     # Create an empty list for all of the page adresses
     listadres = []
     # Use for loop to fill list above with page adresses
     for i in numbers:
-        if i == 1:
+        if i == 0:
             example = "https://itc.ua/"
         else:
-            example = "https://itc.ua/page/" + str(i) + "/"
+            example = "https://itc.ua/page/" + str(i+1) + "/"
         listadres.append(example)
     # Check output
     print(listadres)
@@ -284,23 +294,63 @@ def onepage(adres):
     return df
 
 
-# Create an empty DataFrame
-df = pd.DataFrame()
+def calc(listadres):
+    """Take list and return df with parsed data.
 
-# Adding each new page in one DataFrame
-for c, v in tqdm(enumerate(listadres)):
-    if onepage(v) is None:
-        break
-    else:
+    __Attributes__
+        listadres: list with prepared adresses.
+
+    __Returns__
+        df: DataFrame with parsed values.
+
+    """
+    # Create an empty DataFrame
+    df = pd.DataFrame()
+    # Adding each new page in one DataFrame
+    for c, v in tqdm(enumerate(listadres)):
+        if onepage(v) is None:
+            break
+        else:
+            t.sleep(1.5)
+        df = pd.concat([df, onepage(v)], ignore_index=True)
+        u = 100/(len(listadres))
+        percent = int(round(u*(c+1), 2))
+        print("Currently done " + str(percent) + "%")
+        # listadres.append(get_search_query(list2, c+1))
         t.sleep(1.5)
-    df = pd.concat([df, onepage(v)], ignore_index=True)
-    u = 100/(len(listadres))
-    percent = int(round(u*(c+1), 2))
-    print("Currently done " + str(percent) + "%")
-    listadres.append(get_search_query(list2, c+1))
-    t.sleep(1.5)
+    return df
+
+
+def calc2(listadres):
+    """Take list and return df with parsed data.
+
+    __Attributes__
+        listadres: list with prepared adresses.
+
+    __Returns__
+        df: DataFrame with parsed values.
+
+    """
+    # Create an empty DataFrame
+    df = pd.DataFrame()
+    # Adding each new page in one DataFrame
+    for c, v in enumerate(listadres):
+        if onepage(v) is None:
+            break
+        else:
+            t.sleep(1.5)
+        df = pd.concat([df, onepage(v)], ignore_index=True)
+        # u = 100/(len(listadres))
+        # percent = int(round(u*(c+1), 2))
+        # print("Currently done " + str(percent) + "%")
+        print("Parsed {} pages".format(c+1))
+        listadres.append(get_search_query(list2, c+1))
+        t.sleep(1.5)
+    return df
+
+
 # print(df.date)
-df['date'] = df['date'].str.replace(" в ", "/")
+
 # print(df.date)
 
 # df['date']
@@ -316,7 +366,6 @@ print(df0.head())
 print(df0.dtypes)
 df = pd.concat([df0,df],ignore_index=True, sort=True)
 '''
-df['Date'] = pd.to_datetime(df['date'], format="%d.%m.%Y/%H:%M")
 
 
 def get_years(df):
@@ -374,7 +423,8 @@ def get_one_csv(df):
     """
     # 3:19 PM 13/12/2018
     # Change datetime format to what we want (example above)
-
+    df['date'] = df['date'].str.strip().str.replace(" в ", "/")
+    df['Date'] = pd.to_datetime(df['date'], format="%d.%m.%Y/%H:%M")
     df['Date'] = (
             df['Date']
             .apply(lambda x: dt.datetime.strftime(x, '%I:%M %p %d/%m/%Y'))
@@ -385,6 +435,7 @@ def get_one_csv(df):
     df.drop_duplicates(subset='title', inplace=True)
     # print(df.dtypes)
     df = df.sort_values("date", ascending=False)
+    # del df["date"]
     # df = df.sort_values("Date")
     df = df.reset_index(drop=True)
     # print(df['Date'])
@@ -392,14 +443,70 @@ def get_one_csv(df):
     # Check df
     # df = df[["title","date","Date","time","author","counts","sometext",
     #          "fulltext","listsources"]]
-    print(df)
+    print(df.head(5))
     # Save DataFrame to csv
     df.to_csv("itctray.csv")
     # df.to_csv("all_years.csv")
     # df.to_csv("oneyear2018.csv")
+    return df
 
 
-get_one_csv(df)
+def get_one_csv2(df):
+    """Prepare DataFrame.
+
+    __Attributes__
+        df: DataFrame, which need to be prepared.
+
+    __Returns__
+        df: DataFrame, that prepared.
+
+    """
+    # 3:19 PM 13/12/2018
+    # Change datetime format to what we want (example above)
+    df['date'] = df['date'].str.replace(" в ", "/")
+    df['Date'] = pd.to_datetime(df['date'], format="%d.%m.%Y/%H:%M")
+    df['Date'] = (
+            df['Date']
+            .apply(lambda x: dt.datetime.strftime(x, '%I:%M %p %d/%m/%Y'))
+            )
+
+    # print(df['Date'])
+
+    df.drop_duplicates(subset='title', inplace=True)
+    # print(df.dtypes)
+    df = df.sort_values("date", ascending=False)
+    # del df["date"]
+    # df = df.sort_values("Date")
+    df = df.reset_index(drop=True)
+    # print(df['Date'])
+
+    # Check df
+    # df = df[["title","date","Date","time","author","counts","sometext",
+    #          "fulltext","listsources"]]
+    print(df.head(5))
+    # Save DataFrame to csv
+    df.to_csv("itctray.csv")
+    # df.to_csv("all_years.csv")
+    # df.to_csv("oneyear2018.csv")
+    return df
+
+
+if args["count"] is None \
+ and args["from"] is not None and args["to"] is not None:
+    # search_query = get_search_query(list2, 0)
+    print("1")
+    listadres = prep_numbers_2(1, list2)
+    df = calc2(listadres)
+    get_one_csv(df)
+if args["count"] is not None \
+ and args["from"] is None and args["to"] is None:
+    print("2")
+    listadres = prep_numbers(args["count"])
+    df = calc(listadres)
+# rint(df.head(5))
+# print(df.columns)
+# print(df.dtypes)
+    get_one_csv(df)
 end0 = t.time()
 elapsed_time0 = end0 - start0
 elapsed_time0 = t.strftime("%H:%M:%S", t.gmtime(elapsed_time0))
