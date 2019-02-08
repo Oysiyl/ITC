@@ -14,8 +14,6 @@ import requests
 import time as t
 from tqdm import tqdm
 
-start0 = t.time()
-
 # construct the argument parse and parse the arguments
 ap = argparse.ArgumentParser()
 ap.add_argument("-f", "--from", required=False, type=str,
@@ -451,63 +449,25 @@ def get_one_csv(df):
     return df
 
 
-def get_one_csv2(df):
-    """Prepare DataFrame.
-
-    __Attributes__
-        df: DataFrame, which need to be prepared.
-
-    __Returns__
-        df: DataFrame, that prepared.
-
-    """
-    # 3:19 PM 13/12/2018
-    # Change datetime format to what we want (example above)
-    df['date'] = df['date'].str.replace(" в ", "/")
-    df['Date'] = pd.to_datetime(df['date'], format="%d.%m.%Y/%H:%M")
-    df['Date'] = (
-            df['Date']
-            .apply(lambda x: dt.datetime.strftime(x, '%I:%M %p %d/%m/%Y'))
-            )
-
-    # print(df['Date'])
-
-    df.drop_duplicates(subset='title', inplace=True)
+if __name__ == '__main__':
+    start0 = t.time()
+    if args["count"] is None \
+       and args["from"] is not None and args["to"] is not None:
+        # search_query = get_search_query(list2, 0)
+        print("1")
+        listadres = prep_numbers_2(1, list2)
+        df = calc2(listadres)
+        get_one_csv(df)
+    if args["count"] is not None \
+       and args["from"] is None and args["to"] is None:
+        print("2")
+        listadres = prep_numbers(args["count"])
+        df = calc(listadres)
+    # rint(df.head(5))
+    # print(df.columns)
     # print(df.dtypes)
-    df = df.sort_values("date", ascending=False)
-    # del df["date"]
-    # df = df.sort_values("Date")
-    df = df.reset_index(drop=True)
-    # print(df['Date'])
-
-    # Check df
-    # df = df[["title","date","Date","time","author","counts","sometext",
-    #          "fulltext","listsources"]]
-    print(df.head(5))
-    # Save DataFrame to csv
-    df.to_csv("itctray.csv")
-    # df.to_csv("all_years.csv")
-    # df.to_csv("oneyear2018.csv")
-    return df
-
-
-if args["count"] is None \
- and args["from"] is not None and args["to"] is not None:
-    # search_query = get_search_query(list2, 0)
-    print("1")
-    listadres = prep_numbers_2(1, list2)
-    df = calc2(listadres)
-    get_one_csv(df)
-if args["count"] is not None \
- and args["from"] is None and args["to"] is None:
-    print("2")
-    listadres = prep_numbers(args["count"])
-    df = calc(listadres)
-# rint(df.head(5))
-# print(df.columns)
-# print(df.dtypes)
-    get_one_csv(df)
-end0 = t.time()
-elapsed_time0 = end0 - start0
-elapsed_time0 = t.strftime("%H:%M:%S", t.gmtime(elapsed_time0))
-print("Mission complete in " + str(elapsed_time0))
+        get_one_csv(df)
+    end0 = t.time()
+    elapsed_time0 = end0 - start0
+    elapsed_time0 = t.strftime("%H:%M:%S", t.gmtime(elapsed_time0))
+    print("Mission complete in " + str(elapsed_time0))
