@@ -59,7 +59,7 @@ def get_search_query(list2, t):
         t: if 1 change search query (look below)
 
     __Returns__
-        search_query: List, which contain two search queries.
+        search_query: List, which contain search query.
 
     """
     if t > 1:
@@ -78,9 +78,7 @@ def prep_numbers_2(count, list2):
     """Prep list to parse.
 
     __Attributes__
-        search_query: list with dates.
-        list1: list with dates.
-        list2: list with numbers of pages to parse.
+        list2: list with dates.
 
     __Returns__
         listadres: list with data to parse.
@@ -113,7 +111,7 @@ def prep_numbers(count):
     """Prep list to parse.
 
     __Attributes__
-        list1: list with numbers of pages to parse.
+        count: integer number how much pages you want to scrape.
 
     __Returns__
         listadres: list with data to parse.
@@ -370,12 +368,10 @@ def get_years(df):
     """Save parsed data from DataFrame by year in each csv file.
 
     __Attributes__
-        search_query: list with dates.
-        list1: list with dates.
-        list2: list with numbers of pages to parse.
+        df: DataFrame with parsed data.
 
     __Returns__
-        listadres: list with data to parse.
+        Save each year data in following csv.
 
     """
     list1 = [2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018]
@@ -413,10 +409,10 @@ def get_one_csv(df):
     """Prepare DataFrame.
 
     __Attributes__
-        df: DataFrame, which need to be prepared.
+        df: DataFrame with parsed data.
 
     __Returns__
-        df: DataFrame, that prepared.
+        df: DataFrame sorted by date abd without duplicates.
 
     """
     # 3:19 PM 13/12/2018
