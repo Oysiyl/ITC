@@ -255,8 +255,10 @@ def onepage(adres):
         # listtitle = " ".join(title[i].get_text().split())
         ll = time[i].get_text().replace("\n", "").replace("\t", "")
         listtime.append(ll)
+        # listtime = " ".join(time[i].get_text().split())
         m = timeup[i].get_text().replace("\n", "").replace("\t", "")
         listtimeup.append(m)
+        # listtimeup = " ".join(timeup[i].get_text().split())
         try:
             n = author[i].get_text().replace("\n", "").replace("\t", "")
         except IndexError:
@@ -266,6 +268,7 @@ def onepage(adres):
         # listauthor.append(n)
         o = counts[i].get_text().replace("\n", "").replace("\t", "")
         listcounts.append(o)
+        # listcounts = " ".join(counts[i].get_text().split())
         try:
             p = sometext[i].get_text().replace("\n", "").replace("\t", "")
         except IndexError:
@@ -273,6 +276,7 @@ def onepage(adres):
         listsometext.append(p)
         c = category[i].get_text()
         listcategory.append(c)
+        # listcategory = " ".join(category[i].get_text().split())
 
     # Create DataFrame, that will contains info from lists
     df = pd.DataFrame({
@@ -459,7 +463,7 @@ if __name__ == '__main__':
         print("2")
         listadres = prep_numbers(args["count"])
         df = calc(listadres)
-    # rint(df.head(5))
+    # print(df.head(5))
     # print(df.columns)
     # print(df.dtypes)
         get_one_csv(df)
