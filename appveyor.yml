@@ -16,7 +16,6 @@ install:
   - conda create --name ITC numpy scipy
   - activate ITC
   - pip install -r requirements.txt
-  - pip install -e .
 
 test_script:
   - python3 test_itcfinally.py
