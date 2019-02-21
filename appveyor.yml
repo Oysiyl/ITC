@@ -4,6 +4,20 @@ environment:
   matrix:
 - PYTHON_VERSION: 3.7
 
+init:
+  - "ECHO %PYTHON_VERSION% %MINICONDA%"
+
+install:
+  - "set PATH=%MINICONDA%;%MINICONDA%\\Scripts;%PATH%"
+  - conda config --set always_yes yes --set changeps1 no
+  - conda update -q conda
+  - conda info -a
+  - conda create --name implicit numpy scipy
+  - activate implicit
+  - pip3 install -r requirements.txt
+  - pip3 install -e .
+
+
 install:
   - pip3 install -r requirements.txt
 
