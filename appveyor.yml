@@ -13,10 +13,10 @@ install:
   - conda config --set always_yes yes --set changeps1 no
   - conda update -q conda
   - conda info -a
-  - conda create --name implicit numpy scipy
-  - activate implicit
-  - pip3 install -r requirements.txt
-  - pip3 install -e .
+  - conda create --name ITC numpy scipy
+  - activate ITC
+  - pip install -r requirements.txt
+  - pip install -e .
 
 test_script:
   - python3 test_itcfinally.py
