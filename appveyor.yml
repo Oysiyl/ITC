@@ -5,7 +5,6 @@ environment:
   - PYTHON_VERSION: 3.7
     MINICONDA: C:\Miniconda-x64
 
-
 init:
   - "ECHO %PYTHON_VERSION% %MINICONDA%"
 
@@ -18,10 +17,6 @@ install:
   - activate implicit
   - pip3 install -r requirements.txt
   - pip3 install -e .
-
-
-install:
-  - pip3 install -r requirements.txt
 
 test_script:
   - python3 test_itcfinally.py
